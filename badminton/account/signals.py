@@ -9,4 +9,6 @@ def profile_s(sender , instance , created , **kwargs):
         profile.objects.create(user=instance)
         print("profile created")
 
-#post_save.connect(profile_s , sender=User)
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

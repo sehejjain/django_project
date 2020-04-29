@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate,logout
 from django.contrib.auth.decorators import login_required
-from .models import profile
+from .models import profile as userProfile
 # Create your views here.
 
 def index(request):
@@ -22,9 +22,11 @@ def register(request):
             if form.is_valid() and pform.is_valid():
                 user = form.save()
                 profile_1=pform.save(commit=False)
-                profile_1.user = user
-
-                profile_1.save()
+                userprofile = userProfile.objects.filter(user = user).first()
+                userprofile.name= pform.cleaned_data['name']
+                userprofile.roll = pform.cleaned_data["roll"]
+                userprofile.phone = pform.cleaned_data["phone"]
+                userprofile.save()
                 username=form.cleaned_data.get('username')
                 messages.success(request, 'Account was created for '+ username)
                 return redirect('/login')
